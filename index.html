@@ -36,7 +36,8 @@
     <button onclick="calculateTime()">Calculate</button>
 
     <div id="output"></div>
-    <button onclick="copySummary()">Copy Summary</button>
+    <!--<button onclick="copySummary()">Copy Summary</button>-->
+    <button id="copyButton" onclick="copySummary()" style="display: none;">Copy Summary</button>
 
     <script>
         function calculateTime() {
@@ -87,7 +88,9 @@
             output += `Unlogged: ${toHours(counts['-'])} hrs\n`;
 
             document.getElementById('output').textContent = output;
+            document.getElementById('copyButton').style.display = 'inline-block';            
         }
+        
         function copySummary() {
             const summaryText = document.getElementById('output').textContent;
             navigator.clipboard.writeText(summaryText)
@@ -96,8 +99,8 @@
             })
             .catch(err => {
                 alert('Failed to copy text: ' + err);
-        });
-}
+            });
+        }
     
     </script>
 

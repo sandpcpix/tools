@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Symbol Time Summary</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+        textarea {
+            width: 90%;
+            height: 180px;
+            font-size: 16px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        #output {
+            margin-top: 20px;
+            text-align: left;
+            white-space: pre-line;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Daily Symbol Time Tracker</h2>
+    <p>Paste your symbols below (each character = 15 minutes)</p>
+    
+    <textarea id="inputSymbols" placeholder="Paste symbols from OneNote..."></textarea><br>
+    <button onclick="calculateTime()">Calculate</button>
+
+    <div id="output"></div>
+    <button onclick="copySummary()">Copy Summary</button>
+
+    <script>
+        function calculateTime() {
+            const input = document.getElementById('inputSymbols').value;
+
+            // Clean input and make uppercase (for consistency)
+            const symbols = input.toUpperCase();
+
+            // Your defined symbol key
+            const counts = {
+                '#': 0,  // Sleep
+                'R': 0,  // Reflection
+                '*': 0,  // Work
+                'F': 0,  // Familial
+                'E': 0,  // Exercise
+                '~': 0,  // Leisure
+                'L': 0,  // Learning
+                'S': 0,  // Social
+                'G': 0,  // Growth
+                'O': 0,  // Organization
+                '.': 0,  // Unstructured free time
+                '-': 0   // Unlogged time
+            };
+
+            for (let i = 0; i < symbols.length; i++) {
+                const char = symbols[i];
+                if (counts.hasOwnProperty(char)) {
+                    counts[char]++;
+                }
+            }
+
+            function toHours(count) {
+                return (count * 0.25).toFixed(2);
+            }
+
+            let output = '';
+            output += `Sleep: ${toHours(counts['#'])} hrs\n`;
+            output += `Reflection: ${toHours(counts['R'])} hrs\n`;
+            output += `Work: ${toHours(counts['*'])} hrs\n`;
+            output += `Familial: ${toHours(counts['F'])} hrs\n`;
+            output += `Exercise: ${toHours(counts['E'])} hrs\n`;
+            output += `Leisure: ${toHours(counts['~'])} hrs\n`;
+            output += `Learning: ${toHours(counts['L'])} hrs\n`;
+            output += `Social: ${toHours(counts['S'])} hrs\n`;
+            output += `Growth: ${toHours(counts['G'])} hrs\n`;
+            output += `Organization: ${toHours(counts['O'])} hrs\n`;
+            output += `Unstructured: ${toHours(counts['.'])} hrs\n`;
+            output += `Unlogged: ${toHours(counts['-'])} hrs\n`;
+
+            document.getElementById('output').textContent = output;
+        }
+        function copySummary() {
+    const summaryText = document.getElementById('output').textContent;
+
+    navigator.clipboard.writeText(summaryText)
+        .then(() => {
+            alert('Summary copied to clipboard!');
+        })
+        .catch(err => {
+            alert('Failed to copy text: ' + err);
+        });
+}
+    
+    </script>
+
+</body>
+</html>

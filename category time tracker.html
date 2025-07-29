@@ -89,14 +89,13 @@
             document.getElementById('output').textContent = output;
         }
         function copySummary() {
-    const summaryText = document.getElementById('output').textContent;
-
-    navigator.clipboard.writeText(summaryText)
-        .then(() => {
-            alert('Summary copied to clipboard!');
-        })
-        .catch(err => {
-            alert('Failed to copy text: ' + err);
+            const summaryText = document.getElementById('output').textContent;
+            navigator.clipboard.writeText(summaryText)
+            .then(() => {
+                alert('Summary copied to clipboard!');
+            })
+            .catch(err => {
+                alert('Failed to copy text: ' + err);
         });
 }
     

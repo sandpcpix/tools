@@ -96,13 +96,14 @@
 
             for (let key in counts) {
                 if (!labels.hasOwnProperty(key)) continue;
-                const label = labels[key];
-                const hours = (counts[key] * unit).toFixed(2);
-                const barLength = Math.round(hours * scale);
-                const bar = symbol.repeat(barLength).padEnd(24);
 
-                const labelText = `${label} [${hours} hrs]`.padEnd(24);
-                chart += `${labelText}: ${bar}\n`;
+                const label = labels[key].padEnd(12); // Label left-padded to 12 chars
+                const hours = (counts[key] * unit).toFixed(2);
+                const timeBlock = `[${hours} hrs]`.padEnd(12); // Time block padded
+                const barLength = Math.round(hours * scale);
+                const bar = symbol.repeat(barLength).padEnd(24); // Bar
+
+                chart += `${label}${timeBlock} :   ${bar}\n`;
             }
 
             document.getElementById('chartOutput').textContent = chart;

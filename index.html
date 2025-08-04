@@ -36,9 +36,10 @@
     <textarea id="inputSymbols" placeholder="Paste symbols..."></textarea><br>
     <button onclick="calculateTime()">Calculate</button>
 
-    <div id="output">
-        <div id="chartOutput" style="margin-top:20px; text-align: left; white-space: pre; font-family: monospace;"></div>
-    </div>
+    <div id="outputText"></div>
+    <div id="chartOutput" style="margin-top:20px; text-align: left; white-space: pre; font-family: monospace;"></div>
+
+    
     <button id="copyButton" onclick="copySummary()" style="display: none;">Copy Summary</button>
 
     <script>
@@ -89,7 +90,7 @@
             output += `Unstructured: ${toHours(counts['.'])} hrs\n`;
             output += `Unlogged: ${toHours(counts['-'])} hrs\n`;
 
-            document.getElementById('output').textContent = output;
+            document.getElementById('outputText').textContent = output;
             document.getElementById('copyButton').style.display = 'inline-block';            
 
             drawTextChart(counts);

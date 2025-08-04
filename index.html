@@ -91,6 +91,9 @@
 
             document.getElementById('output').textContent = output;
             document.getElementById('copyButton').style.display = 'inline-block';            
+
+            drawTextChart(counts);
+
             }
 
             function drawTextChart(counts) {
@@ -126,8 +129,6 @@
 
             document.getElementById('chartOutput').textContent = chart;
         }
-
-        drawTextChart(counts);
         
         function copySummary() {
             const summaryText = document.getElementById('output').textContent;

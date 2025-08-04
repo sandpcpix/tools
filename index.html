@@ -73,9 +73,9 @@
         }
 
         function drawTextChart(counts) {
-            const unit = 0.25; // each symbol = 15 minutes
-            const symbol = '█'; // visual bar character
-            const scale = 4;    // how many blocks per hour
+            const unit = 0.25;
+            const symbol = '█';
+            const scale = 4;
 
             const labels = {
                 '#': 'Sleep',
@@ -96,11 +96,13 @@
 
             for (let key in counts) {
                 if (!labels.hasOwnProperty(key)) continue;
-                const label = labels[key].padEnd(12);
-                const hours = counts[key] * unit;
+                const label = labels[key];
+                const hours = (counts[key] * unit).toFixed(2);
                 const barLength = Math.round(hours * scale);
                 const bar = symbol.repeat(barLength).padEnd(24);
-                chart += `${label}: ${bar} ${hours.toFixed(2)} hrs\n`;
+
+                const labelText = `${label} [${hours} hrs]`.padEnd(24);
+                chart += `${labelText}: ${bar}\n`;
             }
 
             document.getElementById('chartOutput').textContent = chart;

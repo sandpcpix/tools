@@ -19,7 +19,7 @@
             padding: 10px 20px;
             font-size: 16px;
         }
-        #outputText, #chartOutput {
+        #chartOutput {
             margin-top: 20px;
             margin-left: 200px;
             text-align: left;
@@ -37,7 +37,6 @@
     <textarea id="inputSymbols" placeholder="Paste symbols..."></textarea><br>
     <button onclick="calculateTime()">Calculate</button>
 
-    <div id="outputText"></div>
     <div id="chartOutput"></div>
     
     <button id="copyButton" onclick="copySummary()" style="display: none;">Copy Summary</button>
@@ -45,11 +44,8 @@
     <script>
         function calculateTime() {
             const input = document.getElementById('inputSymbols').value;
-
-            // Clean input and make uppercase (for consistency)
             const symbols = input.toUpperCase();
 
-            // Symbol mapping
             const counts = {
                 '#': 0,  // Sleep
                 'R': 0,  // Reflection
@@ -72,34 +68,14 @@
                 }
             }
 
-            function toHours(count) {
-                return (count * 0.25).toFixed(2);
-            }
-
-            let output = '';
-            output += `Sleep: ${toHours(counts['#'])} hrs\n`;
-            output += `Reflection: ${toHours(counts['R'])} hrs\n`;
-            output += `Work: ${toHours(counts['*'])} hrs\n`;
-            output += `Familial: ${toHours(counts['F'])} hrs\n`;
-            output += `Exercise: ${toHours(counts['E'])} hrs\n`;
-            output += `Leisure: ${toHours(counts['~'])} hrs\n`;
-            output += `Learning: ${toHours(counts['L'])} hrs\n`;
-            output += `Social: ${toHours(counts['S'])} hrs\n`;
-            output += `Growth: ${toHours(counts['G'])} hrs\n`;
-            output += `Organization: ${toHours(counts['O'])} hrs\n`;
-            output += `Unstructured: ${toHours(counts['.'])} hrs\n`;
-            output += `Unlogged: ${toHours(counts['-'])} hrs\n`;
-
-            document.getElementById('outputText').innerText = output;
-            document.getElementById('copyButton').style.display = 'inline-block';
-
             drawTextChart(counts);
+            document.getElementById('copyButton').style.display = 'inline-block';
         }
 
         function drawTextChart(counts) {
-            const unit = 0.25;
-            const symbol = '█';
-            const scale = 4;
+            const unit = 0.25; // each symbol = 15 minutes
+            const symbol = '█'; // visual bar character
+            const scale = 4;    // how many blocks per hour
 
             const labels = {
                 '#': 'Sleep',
@@ -131,9 +107,10 @@
         }
 
         function copySummary() {
-            const summaryText = document.getElementById('outputText').innerText;
+            const chartText = document.getElementById('chartOutput').textContent;
+
             const textarea = document.createElement('textarea');
-            textarea.value = summaryText;
+            textarea.value = chartText;
             textarea.style.position = 'fixed';
             document.body.appendChild(textarea);
             textarea.focus();
@@ -141,7 +118,7 @@
 
             try {
                 const successful = document.execCommand('copy');
-                alert(successful ? 'Summary copied to clipboard!' : 'Copy failed.');
+                alert(successful ? 'Chart copied to clipboard!' : 'Copy failed.');
             } catch (err) {
                 alert('Unable to copy: ' + err);
             }

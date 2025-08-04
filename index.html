@@ -36,7 +36,9 @@
     <textarea id="inputSymbols" placeholder="Paste symbols..."></textarea><br>
     <button onclick="calculateTime()">Calculate</button>
 
-    <div id="output"></div>
+    <div id="output">
+        <div id="chartOutput" style="margin-top:20px; text-align: left; white-space: pre; font-family: monospace;"></div>
+    </div>
     <button id="copyButton" onclick="copySummary()" style="display: none;">Copy Summary</button>
 
     <script>
@@ -89,7 +91,43 @@
 
             document.getElementById('output').textContent = output;
             document.getElementById('copyButton').style.display = 'inline-block';            
+            }
+
+            function drawTextChart(counts) {
+                const unit = 0.25; // 15 mins
+                const symbol = '█'; // or you can use '#', '=', etc.
+                const scale = 4; // 1 hour = 4 characters (so 0.25 = 1 char)
+
+                const labels = {
+                    '#': 'Sleep',
+                    'R': 'Reflection',
+                    '*': 'Work',
+                    'F': 'Familial',
+                    'E': 'Exercise',
+                    '~': 'Leisure',
+                    'L': 'Learning',
+                    'S': 'Social',
+                    'G': 'Growth',
+                    'O': 'Organization',
+                    '.': 'Unstructured',
+                    '-': 'Unlogged'
+                };
+
+                let chart = '';
+
+                for (let key in counts) {
+                    if (!labels.hasOwnProperty(key)) continue;
+                    const label = labels[key].padEnd(12);
+                    const hours = counts[key] * unit;
+                    const barLength = Math.round(hours * scale);
+                    const bar = symbol.repeat(barLength).padEnd(24);
+                    chart += `${label}: ${bar} ${hours.toFixed(2)} hrs\n`;
+                }
+
+            document.getElementById('chartOutput').textContent = chart;
         }
+
+        drawTextChart(counts);
         
         function copySummary() {
             const summaryText = document.getElementById('output').textContent;

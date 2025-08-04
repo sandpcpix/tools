@@ -19,12 +19,13 @@
             padding: 10px 20px;
             font-size: 16px;
         }
-        #output {
+        #outputText, #chartOutput {
             margin-top: 20px;
             margin-left: 200px;
             text-align: left;
-            white-space: pre-line;
+            white-space: pre;
             font-size: 16px;
+            font-family: monospace;
         }
     </style>
 </head>
@@ -37,8 +38,7 @@
     <button onclick="calculateTime()">Calculate</button>
 
     <div id="outputText"></div>
-    <div id="chartOutput" style="margin-top:20px; text-align: left; white-space: pre; font-family: monospace;"></div>
-
+    <div id="chartOutput"></div>
     
     <button id="copyButton" onclick="copySummary()" style="display: none;">Copy Summary</button>
 
@@ -49,7 +49,7 @@
             // Clean input and make uppercase (for consistency)
             const symbols = input.toUpperCase();
 
-            // Your defined symbol key
+            // Symbol mapping
             const counts = {
                 '#': 0,  // Sleep
                 'R': 0,  // Reflection
@@ -61,8 +61,8 @@
                 'S': 0,  // Social
                 'G': 0,  // Growth
                 'O': 0,  // Organization
-                '.': 0,  // Unstructured free time
-                '-': 0   // Unlogged time
+                '.': 0,  // Unstructured
+                '-': 0   // Unlogged
             };
 
             for (let i = 0; i < symbols.length; i++) {
@@ -90,58 +90,64 @@
             output += `Unstructured: ${toHours(counts['.'])} hrs\n`;
             output += `Unlogged: ${toHours(counts['-'])} hrs\n`;
 
-            document.getElementById('outputText').textContent = output;
-            document.getElementById('copyButton').style.display = 'inline-block';            
+            document.getElementById('outputText').innerText = output;
+            document.getElementById('copyButton').style.display = 'inline-block';
 
             drawTextChart(counts);
+        }
 
+        function drawTextChart(counts) {
+            const unit = 0.25;
+            const symbol = '█';
+            const scale = 4;
+
+            const labels = {
+                '#': 'Sleep',
+                'R': 'Reflection',
+                '*': 'Work',
+                'F': 'Familial',
+                'E': 'Exercise',
+                '~': 'Leisure',
+                'L': 'Learning',
+                'S': 'Social',
+                'G': 'Growth',
+                'O': 'Organization',
+                '.': 'Unstructured',
+                '-': 'Unlogged'
+            };
+
+            let chart = '';
+
+            for (let key in counts) {
+                if (!labels.hasOwnProperty(key)) continue;
+                const label = labels[key].padEnd(12);
+                const hours = counts[key] * unit;
+                const barLength = Math.round(hours * scale);
+                const bar = symbol.repeat(barLength).padEnd(24);
+                chart += `${label}: ${bar} ${hours.toFixed(2)} hrs\n`;
             }
-
-            function drawTextChart(counts) {
-                const unit = 0.25; // 15 mins
-                const symbol = '█'; // or you can use '#', '=', etc.
-                const scale = 4; // 1 hour = 4 characters (so 0.25 = 1 char)
-
-                const labels = {
-                    '#': 'Sleep',
-                    'R': 'Reflection',
-                    '*': 'Work',
-                    'F': 'Familial',
-                    'E': 'Exercise',
-                    '~': 'Leisure',
-                    'L': 'Learning',
-                    'S': 'Social',
-                    'G': 'Growth',
-                    'O': 'Organization',
-                    '.': 'Unstructured',
-                    '-': 'Unlogged'
-                };
-
-                let chart = '';
-
-                for (let key in counts) {
-                    if (!labels.hasOwnProperty(key)) continue;
-                    const label = labels[key].padEnd(12);
-                    const hours = counts[key] * unit;
-                    const barLength = Math.round(hours * scale);
-                    const bar = symbol.repeat(barLength).padEnd(24);
-                    chart += `${label}: ${bar} ${hours.toFixed(2)} hrs\n`;
-                }
 
             document.getElementById('chartOutput').textContent = chart;
         }
-        
+
         function copySummary() {
-            const summaryText = document.getElementById('output').textContent;
-            navigator.clipboard.writeText(summaryText)
-            .then(() => {
-                alert('Summary copied to clipboard!');
-            })
-            .catch(err => {
-                alert('Failed to copy text: ' + err);
-            });
+            const summaryText = document.getElementById('outputText').innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = summaryText;
+            textarea.style.position = 'fixed';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+
+            try {
+                const successful = document.execCommand('copy');
+                alert(successful ? 'Summary copied to clipboard!' : 'Copy failed.');
+            } catch (err) {
+                alert('Unable to copy: ' + err);
+            }
+
+            document.body.removeChild(textarea);
         }
-    
     </script>
 
 </body>
